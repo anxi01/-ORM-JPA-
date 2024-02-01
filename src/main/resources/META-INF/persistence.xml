@@ -5,6 +5,7 @@
 
   <persistence-unit name="JAVA-ORM-JPA">
     <class>start.Member</class>
+    <class>start.Board</class>
     <properties>
       <!-- 필수 속성 -->
       <property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
