@@ -10,11 +10,15 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table(name = "MEMBER")
+@Table(name = "MEMBER", uniqueConstraints = {@UniqueConstraint(
+    name = "NAME_AGE_UNIQUE",
+    columnNames = {"NAME", "AGE"}
+)})
 @Getter
 @Setter
 public class Member {
@@ -23,7 +27,7 @@ public class Member {
   @Column(name = "ID")
   private String id;
 
-  @Column(name = "NAME")
+  @Column(name = "NAME", nullable = false, length = 10)
   private String username;
 
   private Integer age;
