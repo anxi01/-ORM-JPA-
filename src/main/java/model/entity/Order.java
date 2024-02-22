@@ -17,11 +17,13 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity
 @Table(name = "ORDERS")
 @Data
-public class Order {
+@EqualsAndHashCode(callSuper = true)
+public class Order extends BaseEntity {
 
   @Id
   @GeneratedValue
