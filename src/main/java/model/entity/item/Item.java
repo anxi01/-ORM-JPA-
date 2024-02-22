@@ -1,4 +1,4 @@
-package model.entity;
+package model.entity.item;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,6 +11,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.ManyToMany;
 import lombok.Data;
+import model.entity.Category;
 
 @Entity
 @Data

@@ -10,7 +10,7 @@
     <class>model.entity.Category</class>
     <class>model.entity.Delivery</class>
     <class>model.entity.DeliveryStatus</class>
-    <class>model.entity.Item</class>
+    <class>model.entity.item.Item</class>
     <class>model.entity.Member</class>
     <class>model.entity.Order</class>
     <class>model.entity.OrderItem</class>

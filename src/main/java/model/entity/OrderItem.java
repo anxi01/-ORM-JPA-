@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.Data;
+import model.entity.item.Item;
 
 @Entity
 @Table(name = "ORDER_ITEM")
