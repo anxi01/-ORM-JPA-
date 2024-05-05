@@ -46,14 +46,12 @@ public class JpaMain {
     em.persist(member2);
     em.persist(member3);
 
-    Query query = em.createQuery("select m.id, m.name from model.entity.Member as m");
+    String nameParameter = "2번";
 
-    List resultList = query.getResultList();
+    TypedQuery<Member> query = em.createQuery("select m from model.entity.Member as m where m.name = :name", Member.class);
 
-    for (Object o : resultList) {
-      Object[] result = (Object[]) o;
-      System.out.println("id = " + result[0]);
-      System.out.println("name = " + result[1]);
-    }
+    query.setParameter("name", nameParameter);
+    List<Member> resultList = query.getResultList();
+    resultList.forEach(System.out::println);
   }
 }
