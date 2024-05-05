@@ -48,10 +48,11 @@ public class JpaMain {
 
     String nameParameter = "2번";
 
-    TypedQuery<Member> query = em.createQuery("select m from model.entity.Member as m where m.name = :name", Member.class);
+    List<Member> members = em.createQuery(
+            "select m from model.entity.Member as m where m.name = ?1", Member.class)
+        .setParameter(1, nameParameter)
+        .getResultList();
 
-    query.setParameter("name", nameParameter);
-    List<Member> resultList = query.getResultList();
-    resultList.forEach(System.out::println);
+    members.forEach(System.out::println);
   }
 }
