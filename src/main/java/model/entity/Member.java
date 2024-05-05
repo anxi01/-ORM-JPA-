@@ -28,4 +28,8 @@ public class Member extends BaseEntity {
 
   @OneToMany(mappedBy = "member")
   private List<Order> orders = new ArrayList<>();
+
+  public Member(String name) {
+    this.name = name;
+  }
 }
