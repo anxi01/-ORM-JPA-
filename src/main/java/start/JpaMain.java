@@ -5,6 +5,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import model.entity.Member;
 
@@ -45,10 +46,14 @@ public class JpaMain {
     em.persist(member2);
     em.persist(member3);
 
-    TypedQuery<Member> query = em.createQuery("select m from Member m", Member.class);
+    Query query = em.createQuery("select m.id, m.name from model.entity.Member as m");
 
-    List<Member> resultList = query.getResultList();
+    List resultList = query.getResultList();
 
-    resultList.forEach(s -> System.out.println("member = " + s));
+    for (Object o : resultList) {
+      Object[] result = (Object[]) o;
+      System.out.println("id = " + result[0]);
+      System.out.println("name = " + result[1]);
+    }
   }
 }
