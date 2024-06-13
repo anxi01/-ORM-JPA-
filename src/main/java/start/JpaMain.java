@@ -1,13 +1,12 @@
 package start;
 
+import java.util.Iterator;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
 import javax.persistence.Query;
-import javax.persistence.TypedQuery;
-import model.entity.Member;
 
 public class JpaMain {
 
@@ -38,21 +37,32 @@ public class JpaMain {
   /* 비즈니스 로직 */
   private static void logic(EntityManager em) {
 
-    Member member1 = new Member("1번");
-    Member member2 = new Member("2번");
-    Member member3 = new Member("3번");
+    Member member1 = new Member("1번", 1);
+    Member member2 = new Member("2번", 2);
+    Member member3 = new Member("3번", 3);
 
     em.persist(member1);
     em.persist(member2);
     em.persist(member3);
 
-    String nameParameter = "2번";
+    Query query = em.createQuery("select m.username, m.age from start.Member m");
+    List resultList = query.getResultList();
 
-    List<Member> members = em.createQuery(
-            "select m from model.entity.Member as m where m.name = ?1", Member.class)
-        .setParameter(1, nameParameter)
+    // 1. 여러 프로젝션
+    Iterator iterator = resultList.iterator();
+    while (iterator.hasNext()) {
+      Object[] row = (Object[]) iterator.next();
+      String username = (String) row[0];
+      int age = (Integer) row[1];
+    }
+
+    // 2. Object[]로 조회
+    List<Object[]> resultList2 = em.createQuery("select m.username, m.age from start.Member m")
         .getResultList();
 
-    members.forEach(System.out::println);
+    for(Object[] row : resultList2) {
+      String username = (String) row[0];
+      int age = (Integer) row[1];
+    }
   }
 }

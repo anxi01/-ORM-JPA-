@@ -12,6 +12,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -21,6 +22,7 @@ import lombok.Setter;
 )})
 @Getter
 @Setter
+@NoArgsConstructor
 public class Member {
 
   @Id
@@ -43,4 +45,9 @@ public class Member {
 
   @Lob
   private String description;
+
+  public Member(String username, int age) {
+    this.username = username;
+    this.age = age;
+  }
 }
