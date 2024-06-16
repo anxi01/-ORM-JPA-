@@ -1,16 +1,12 @@
 package start;
 
-import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.Lob;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,21 +34,17 @@ public class Member {
 
   private Integer age;
 
-  @Enumerated(EnumType.STRING)
-  private RoleType roleType;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date createdDate;
-
-  @Temporal(TemporalType.TIMESTAMP)
-  private Date lastModifiedDate;
-
-  @Lob
-  private String description;
+  @ManyToOne
+  @JoinColumn(name = "team_id")
+  private Team team;
 
   public Member(String username, int age) {
     this.username = username;
     this.age = age;
+  }
+
+  public void addTeam(Team team) {
+    this.team = team;
   }
 }
 class UserDTO {

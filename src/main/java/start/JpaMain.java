@@ -1,13 +1,10 @@
 package start;
 
-import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
-import javax.persistence.Query;
-import javax.persistence.TypedQuery;
 
 public class JpaMain {
 
@@ -38,22 +35,37 @@ public class JpaMain {
   /* 비즈니스 로직 */
   private static void logic(EntityManager em) {
 
+    Team teamA= new Team("팀A");
     Member member1 = new Member("1번", 1);
     Member member2 = new Member("2번", 2);
     Member member3 = new Member("3번", 3);
-    Member sameMember3 = new Member("3번", 33);
 
+    teamA.addMember(member1);
+    teamA.addMember(member2);
+    teamA.addMember(member3);
+    member1.addTeam(teamA);
+    member2.addTeam(teamA);
+    member3.addTeam(teamA);
+
+    em.persist(teamA);
     em.persist(member1);
     em.persist(member2);
     em.persist(member3);
-    em.persist(sameMember3);
 
-    // GROUP BY, HAVING
-    Query query = em.createQuery(
-        "select count(m) from start.Member m group by m.username having max(age) < 30");
-    List result = query.getResultList();
-    for (Object count : result) {
-      System.out.println(count);
+    String teamName = "팀A";
+    List<Member> members = em.createQuery("select m from start.Member m "
+            + "inner join m.team t where t.name = :teamName", Member.class)
+        .setParameter("teamName", teamName)
+        .getResultList();
+
+    List<Object[]> result = em.createQuery("select m, t from start.Member m join m.team t")
+        .getResultList();
+
+    for (Object[] row : result) {
+      Member member = (Member) row[0];
+      Team team = (Team) row[1];
+      System.out.println("Member : " + member);
+      System.out.println("Team : " + team.getName());
     }
   }
 }
