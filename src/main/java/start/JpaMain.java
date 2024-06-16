@@ -45,30 +45,13 @@ public class JpaMain {
     em.persist(member2);
     em.persist(member3);
 
-    // 객체 변환 작업
-    // 1. new 명령어 사용 전
-    List<Object[]> resultList = em.createQuery("select m.username, m.age from start.Member m").getResultList();
-
-    List<UserDTO> userDTOS = new ArrayList<>();
-    for (Object[] row : resultList) {
-      UserDTO userDTO = new UserDTO((String) row[0], (Integer) row[1]);
-      userDTOS.add(userDTO);
-    }
-
-    // 2. new 명령어 사용 후
-    TypedQuery<UserDTO> query = em.createQuery("select new start.JpaMain.UserDTO(m.username, m.age) from start.Member m", UserDTO.class);
-    List<UserDTO> newUserDTOs = query.getResultList();
-
-    System.out.println(userDTOS == newUserDTOs);
-  }
-
-  public static class UserDTO {
-    private String username;
-    private int age;
-
-    public UserDTO(String username, int age) {
-      this.username = username;
-      this.age = age;
+    TypedQuery<Member> query = em.createQuery("select m from Member m order by m.username desc ",
+        Member.class);
+    query.setFirstResult(1); // 0번 index부터 시작, pageNumber라 생각하면 됨.
+    query.setMaxResults(2); // 한 페이지에 포함된 데이터 개수
+    List<Member> resultList = query.getResultList();
+    for (Member member : resultList) {
+      System.out.println(member);
     }
   }
 }

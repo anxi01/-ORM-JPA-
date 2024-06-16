@@ -15,6 +15,7 @@ import javax.persistence.UniqueConstraint;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
 @Entity
 @Table(name = "MEMBER", uniqueConstraints = {@UniqueConstraint(
@@ -24,6 +25,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
+@ToString
 public class Member {
 
   @Id
