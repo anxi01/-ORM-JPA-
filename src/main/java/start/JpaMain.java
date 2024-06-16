@@ -6,6 +6,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 public class JpaMain {
@@ -40,18 +41,20 @@ public class JpaMain {
     Member member1 = new Member("1번", 1);
     Member member2 = new Member("2번", 2);
     Member member3 = new Member("3번", 3);
+    Member sameMember3 = new Member("3번", 33);
 
     em.persist(member1);
     em.persist(member2);
     em.persist(member3);
+    em.persist(sameMember3);
 
-    TypedQuery<Member> query = em.createQuery("select m from Member m order by m.username desc ",
-        Member.class);
-    query.setFirstResult(1); // 0번 index부터 시작, pageNumber라 생각하면 됨.
-    query.setMaxResults(2); // 한 페이지에 포함된 데이터 개수
-    List<Member> resultList = query.getResultList();
-    for (Member member : resultList) {
-      System.out.println(member);
-    }
+    // 집합 함수
+    Query query = em.createQuery("select count(m), max(m.age), avg(m.age), sum(m.age) from Member m");
+    Object[] result = (Object[]) query.getSingleResult();
+
+    System.out.println("Number of members: " + result[0]);
+    System.out.println("Max age: " + result[1]);
+    System.out.println("Average age: " + result[2]);
+    System.out.println("Sum of ages: " + result[3]);
   }
 }
