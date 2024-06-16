@@ -52,20 +52,13 @@ public class JpaMain {
     em.persist(member2);
     em.persist(member3);
 
-    String teamName = "팀A";
-    List<Member> members = em.createQuery("select m from start.Member m "
-            + "inner join m.team t where t.name = :teamName", Member.class)
-        .setParameter("teamName", teamName)
+    List<Object[]> resultList = em.createQuery(
+            "select t, m from start.Team t left join t.members m")
         .getResultList();
 
-    List<Object[]> result = em.createQuery("select m, t from start.Member m join m.team t")
-        .getResultList();
-
-    for (Object[] row : result) {
-      Member member = (Member) row[0];
-      Team team = (Team) row[1];
-      System.out.println("Member : " + member);
-      System.out.println("Team : " + team.getName());
+    for(Object[] row : resultList) {
+      System.out.println(row[0]);
+      System.out.println(row[1]);
     }
   }
 }
