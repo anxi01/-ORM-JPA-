@@ -48,13 +48,12 @@ public class JpaMain {
     em.persist(member3);
     em.persist(sameMember3);
 
-    // 집합 함수
-    Query query = em.createQuery("select count(m), max(m.age), avg(m.age), sum(m.age) from Member m");
-    Object[] result = (Object[]) query.getSingleResult();
-
-    System.out.println("Number of members: " + result[0]);
-    System.out.println("Max age: " + result[1]);
-    System.out.println("Average age: " + result[2]);
-    System.out.println("Sum of ages: " + result[3]);
+    // GROUP BY, HAVING
+    Query query = em.createQuery(
+        "select count(m) from start.Member m group by m.username having max(age) < 30");
+    List result = query.getResultList();
+    for (Object count : result) {
+      System.out.println(count);
+    }
   }
 }
