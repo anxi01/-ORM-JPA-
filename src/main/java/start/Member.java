@@ -5,6 +5,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Table;
@@ -26,8 +27,9 @@ import lombok.Setter;
 public class Member {
 
   @Id
+  @GeneratedValue
   @Column(name = "ID")
-  private String id;
+  private Long id;
 
   @Column(name = "NAME", nullable = false, length = 10)
   private String username;
@@ -47,6 +49,15 @@ public class Member {
   private String description;
 
   public Member(String username, int age) {
+    this.username = username;
+    this.age = age;
+  }
+}
+class UserDTO {
+  private String username;
+  private int age;
+
+  public UserDTO(String username, int age) {
     this.username = username;
     this.age = age;
   }
