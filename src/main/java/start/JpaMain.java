@@ -5,6 +5,10 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 public class JpaMain {
 
@@ -55,45 +59,22 @@ public class JpaMain {
     em.persist(member2);
     em.persist(member3);
 
-    // 엔티티 페치 조인
-    String jpql = "select m from start.Member m join fetch m.team";
-    List<Member> members = em.createQuery(jpql, Member.class).getResultList();
-    for (Member member : members) {
-      // 페치 조인으로 회원과 팀을 함께 조회해서 지연 로딩 발생 X
-      System.out.println("username: " + member.getUsername() + ", team: " + member.getTeam());
-    }
+    CriteriaBuilder cb = em.getCriteriaBuilder();
+    CriteriaQuery<Member> cq = cb.createQuery(Member.class);
+    Root<Member> m = cq.from(Member.class);
 
-    // 컬렉션 페치 조인
-    jpql = "select t from Team t join fetch t.members where t.name = '팀A'";
-    List<Team> teams = em.createQuery(jpql, Team.class).getResultList();
-    for (Team team : teams) {
-      System.out.println("team: " + team);
+    // 검색 조건 정의
+    Predicate userNameEqual = cb.equal(m.get("username"), "1번");
 
-      /**
-       * 팀A의 member1, member2가 존재하고
-       * 여기서 컬렉션 페치 조인 실행시 팀 A가 2번 조회된다.
-       *
-       * team: start.Team@3d0035d2
-       * member: Member(id=3, username=1번, age=1, team=start.Team@3d0035d2)
-       * member: Member(id=4, username=2번, age=2, team=start.Team@3d0035d2)
-       * team: start.Team@3d0035d2
-       * member: Member(id=3, username=1번, age=1, team=start.Team@3d0035d2)
-       * member: Member(id=4, username=2번, age=2, team=start.Team@3d0035d2)
-       */
-      for (Member member : team.getMembers()) {
-        System.out.println("member: " + member);
-      }
-    }
+    // 정렬 조건 정의
+    javax.persistence.criteria.Order ageDesc = cb.desc(m.get("age"));
+    cq.select(m)
+        .where (userNameEqual) //WHERE 절 생성
+        .orderBy (ageDesc) ; //ORDER BY 절 생성
 
-    // 따라서 위의 문제를 해결하기 위해 "DISTINCT" 를 사용하여 중복을 제거한다.
-    jpql = "select distinct t from Team t join fetch t.members where t.name = '팀A'";
-    teams = em.createQuery(jpql, Team.class).getResultList();
-    for (Team team : teams) {
-      System.out.println("team: " + team);
-
-      for (Member member : team.getMembers()) {
-        System.out.println("member: " + member);
-      }
+    List<Member> resultList = em.createQuery(cq).getResultList();
+    for (Member member : resultList) {
+      System.out.println("1번 멤버 : " + member);
     }
   }
 }

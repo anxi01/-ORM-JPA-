@@ -4,17 +4,19 @@
   xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_2.xsd">
 
   <persistence-unit name="JAVA-ORM-JPA">
-<!--    <class>start.Member</class>-->
+    <class>start.Team</class>
+    <class>start.Member</class>
+    <class>start.UserDTO</class>
 <!--    <class>start.Board</class>-->
 
-    <class>model.entity.Category</class>
-    <class>model.entity.Delivery</class>
-    <class>model.entity.DeliveryStatus</class>
-    <class>model.entity.item.Item</class>
-    <class>model.entity.Member</class>
-    <class>model.entity.Order</class>
-    <class>model.entity.OrderItem</class>
-    <class>model.entity.OrderStatus</class>
+<!--    <class>model.entity.Category</class>-->
+<!--    <class>model.entity.Delivery</class>-->
+<!--    <class>model.entity.DeliveryStatus</class>-->
+<!--    <class>model.entity.item.Item</class>-->
+<!--    <class>model.entity.Member</class>-->
+<!--    <class>model.entity.Order</class>-->
+<!--    <class>model.entity.OrderItem</class>-->
+<!--    <class>model.entity.OrderStatus</class>-->
 
     <properties>
       <!-- 필수 속성 -->
