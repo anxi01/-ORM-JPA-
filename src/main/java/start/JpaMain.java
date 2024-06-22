@@ -5,6 +5,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
 import javax.persistence.Persistence;
+import javax.persistence.Tuple;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -60,21 +62,21 @@ public class JpaMain {
     em.persist(member3);
 
     CriteriaBuilder cb = em.getCriteriaBuilder();
-    CriteriaQuery<Member> cq = cb.createQuery(Member.class);
+
+    CriteriaQuery<Tuple> cq = cb.createTupleQuery();
+
     Root<Member> m = cq.from(Member.class);
+    cq.multiselect(
+        m.get("username").alias("username"),
+        m.get("age").alias("age")
+    );
 
-    // 검색 조건 정의
-    Predicate userNameEqual = cb.equal(m.get("username"), "1번");
-
-    // 정렬 조건 정의
-    javax.persistence.criteria.Order ageDesc = cb.desc(m.get("age"));
-    cq.select(m)
-        .where (userNameEqual) //WHERE 절 생성
-        .orderBy (ageDesc) ; //ORDER BY 절 생성
-
-    List<Member> resultList = em.createQuery(cq).getResultList();
-    for (Member member : resultList) {
-      System.out.println("1번 멤버 : " + member);
+    TypedQuery<Tuple> query = em.createQuery(cq);
+    List<Tuple> results = query.getResultList();
+    for (Tuple tuple : results) {
+      String username = tuple.get("username", String.class);
+      Integer age = tuple.get("age", Integer.class);
+      System.out.println(username + " " + age);
     }
   }
 }
