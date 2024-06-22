@@ -9,6 +9,7 @@ import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Expression;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -62,21 +63,23 @@ public class JpaMain {
     em.persist(member3);
 
     CriteriaBuilder cb = em.getCriteriaBuilder();
-
-    CriteriaQuery<Tuple> cq = cb.createTupleQuery();
-
+    CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
     Root<Member> m = cq.from(Member.class);
-    cq.multiselect(
-        m.get("username").alias("username"),
-        m.get("age").alias("age")
-    );
 
-    TypedQuery<Tuple> query = em.createQuery(cq);
-    List<Tuple> results = query.getResultList();
-    for (Tuple tuple : results) {
-      String username = tuple.get("username", String.class);
-      Integer age = tuple.get("age", Integer.class);
-      System.out.println(username + " " + age);
+    Expression maxAge = cb.max(m.<Integer>get("age"));
+    Expression minAge = cb.min(m.<Integer>get("age"));
+
+    cq.multiselect(m.get("team").get("name"), maxAge, minAge);
+    cq.groupBy(m.get("team").get("name"));
+
+    TypedQuery<Object[]> query = em.createQuery(cq);
+    List<Object[]> resultList = query.getResultList();
+
+    for (Object[] row : resultList) {
+      String teamName = (String) row[0];
+      Integer max = (Integer) row[1];
+      Integer min = (Integer) row[2];
+      System.out.println(teamName + " " + max + " " + min);
     }
   }
 }
