@@ -10,6 +10,8 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Expression;
+import javax.persistence.criteria.Join;
+import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
@@ -65,21 +67,17 @@ public class JpaMain {
     CriteriaBuilder cb = em.getCriteriaBuilder();
     CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
     Root<Member> m = cq.from(Member.class);
+    Join<Member, Team> t = m.join("team", JoinType.INNER);
 
-    Expression maxAge = cb.max(m.<Integer>get("age"));
-    Expression minAge = cb.min(m.<Integer>get("age"));
+    cq.multiselect(m, t)
+        .where(cb.equal(t.get("name"), "팀A"));
 
-    cq.multiselect(m.get("team").get("name"), maxAge, minAge);
-    cq.groupBy(m.get("team").get("name"));
-
-    TypedQuery<Object[]> query = em.createQuery(cq);
-    List<Object[]> resultList = query.getResultList();
-
-    for (Object[] row : resultList) {
-      String teamName = (String) row[0];
-      Integer max = (Integer) row[1];
-      Integer min = (Integer) row[2];
-      System.out.println(teamName + " " + max + " " + min);
+    List<Object[]> resultList = em.createQuery(cq).getResultList();
+    for (Object[] result : resultList) {
+      Member member = (Member) result[0];
+      Team team = (Team) result[1];
+      System.out.println("Member: " + member);
+      System.out.println("Team: " + team);
     }
   }
 }
