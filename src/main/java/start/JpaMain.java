@@ -65,19 +65,15 @@ public class JpaMain {
     em.persist(member3);
 
     CriteriaBuilder cb = em.getCriteriaBuilder();
-    CriteriaQuery<Object[]> cq = cb.createQuery(Object[].class);
+    CriteriaQuery<Member> cq = cb.createQuery(Member.class);
     Root<Member> m = cq.from(Member.class);
-    Join<Member, Team> t = m.join("team", JoinType.INNER);
+    m.fetch("team", JoinType.LEFT);
 
-    cq.multiselect(m, t)
-        .where(cb.equal(t.get("name"), "팀A"));
+    cq.select(m);
 
-    List<Object[]> resultList = em.createQuery(cq).getResultList();
-    for (Object[] result : resultList) {
-      Member member = (Member) result[0];
-      Team team = (Team) result[1];
-      System.out.println("Member: " + member);
-      System.out.println("Team: " + team);
+    List<Member> resultList = em.createQuery(cq).getResultList();
+    for (Member member : resultList) {
+      System.out.println(member);
     }
   }
 }
